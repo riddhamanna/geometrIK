@@ -13,3 +13,6 @@ The link lengths (in mm), and the joint angle constraints (in degrees) for each 
 Either raw angles between the links or angles transformed in terms of servo rotations can be obtained.
 
 All the defaults are set for the Arduino TinkerKit Braccio robotic arm.
+
+The solutions are ideal ones and does not take care of inaccuracies.
+The project is under development.
