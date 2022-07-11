@@ -126,6 +126,7 @@ class geometrIK:
 
     def solve(self, transform=False):
         """Reports and shows all posible orientations of the robot to reach the given end effector coordinates starting from an approach angle of 1 to 180 degrees"""
+        self.solutions = []
         for i in range(0, 181):
             try:
                 m1, m2, m3, m4, m5, m6 = self.get_angles(i, transform)
