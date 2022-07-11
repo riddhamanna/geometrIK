@@ -94,7 +94,7 @@ class geometrIK:
         m4 = round(self.get_angle_between_two_vectors(D, C, B))
 
         if transform:
-            m1, m2, m3, m4 = self.transform_angles(m1,m2,m3,m4)
+            m1, m2, m3, m4 = self.transform_angles(m1, m2, m3, m4)
         m5 = self.wrist
         m6 = self.gripper
 
@@ -110,25 +110,25 @@ class geometrIK:
             sintheta = sin(-1 * radians(m2_1))
             tx = [0] + list(costheta * x_coord + sintheta * y_coord)
             ty = [0] + list(costheta * y_coord - sintheta * x_coord + self.link1)
-            plt.plot(tx,ty)
+            plt.plot(tx, ty)
             return (m1, m2, m3, m4, m5, m6)
         else:
             return None
 
-    def transform_angles(self,m1,m2,m3,m4):
+    def transform_angles(self, m1, m2, m3, m4):
         """Converts raw angles to robot spesific joint angles. Customised for Arduino TinkerKit Braccio robotic arm, in a particular setup. Needs to be customised for your model and setup"""
         m1 = 180 - m1
         m2 = 180 - m2
         m3 = 360 - m3 - 90
         m4 = 360 - m4 - 90
 
-        return(m1,m2,m3,m4)
+        return (m1, m2, m3, m4)
 
-    def solve(self,transform=False):
+    def solve(self, transform=False):
         """Reports and shows all posible orientations of the robot to reach the given end effector coordinates starting from an approach angle of 1 to 180 degrees"""
         for i in range(0, 181):
             try:
-                m1, m2, m3, m4, m5, m6 = self.get_angles(i,transform)
+                m1, m2, m3, m4, m5, m6 = self.get_angles(i, transform)
                 angles = [m1, m2, m3, m4, m5, m6]
                 self.solutions.append(angles)
 
