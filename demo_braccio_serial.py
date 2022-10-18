@@ -29,6 +29,7 @@ sendString = "P90,90,90,90,90,73,100"
 print(sendString)
 print(s.write(bytes(sendString, "utf-8")))
 time.sleep(2)
+current_braccio_angles = [90, 90, 90, 90, 90, 73, 100]
 
 robot = gIK.geometrIK()
 
@@ -36,6 +37,24 @@ while True:
     command = input("Enter command: ")
     if command == "quit":
         break
+    if command == "open_gripper":
+        current_braccio_angles[5] = 20
+        robot.gripper = 20
+        print(current_braccio_angles)
+        sendString = "P" + str(current_braccio_angles)[1:-1].replace(" ", "")
+        print(sendString)
+        print(s.write(bytes(sendString, "utf-8")))
+        time.sleep(2)
+        continue
+    if command == "close_gripper":
+        current_braccio_angles[5] = 73
+        robot.gripper = 73
+        print(current_braccio_angles)
+        sendString = "P" + str(current_braccio_angles)[1:-1].replace(" ", "")
+        print(sendString)
+        print(s.write(bytes(sendString, "utf-8")))
+        time.sleep(2)
+        continue
     x, y, z = (int(s) for s in input("Enter coordinates: ").split(","))
     solns = []
     robot.set_coordinates(x, y, z)
@@ -48,6 +67,7 @@ while True:
 
         braccio_angles = solns[int(input("Enter soln number: "))]
         braccio_angles.append(100)
+        current_braccio_angles = braccio_angles
         print(braccio_angles)
         sendString = "P" + str(braccio_angles)[1:-1].replace(" ", "")
         print(sendString)
