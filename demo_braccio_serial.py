@@ -34,7 +34,7 @@ current_braccio_angles = [90, 90, 90, 90, 90, 73, 100]
 robot = gIK.geometrIK()
 
 while True:
-    command = input("Enter command: ")
+    command = input("Enter command or coordinates (x,y,z): ")
     if command == "quit":
         break
     if command == "open_gripper":
@@ -55,25 +55,42 @@ while True:
         print(s.write(bytes(sendString, "utf-8")))
         time.sleep(2)
         continue
-    x, y, z = (int(s) for s in input("Enter coordinates: ").split(","))
-    solns = []
-    robot.set_coordinates(x, y, z)
-    solns = robot.solve(transform=True)
-    if len(solns) == 0:
-        print("No solution")
-    else:
-        for i, soln in enumerate(solns):
-            print(i, soln)
+    if len(command.split(",")) == 3:
+        x, y, z = (int(s) for s in command.split(","))
+        solns = []
+        robot.set_coordinates(x, y, z)
+        solns = robot.solve(transform=True)
+        if len(solns) == 0:
+            print("No solution")
+            continue
+        else:
+            for i, soln in enumerate(solns):
+                print(i, soln)
 
-        braccio_angles = solns[int(input("Enter soln number: "))]
-        braccio_angles.append(100)
-        current_braccio_angles = braccio_angles
-        print(braccio_angles)
-        sendString = "P" + str(braccio_angles)[1:-1].replace(" ", "")
+            braccio_angles = solns[int(input("Enter soln number: "))]
+            braccio_angles.append(100)
+            current_braccio_angles = braccio_angles
+            print(braccio_angles)
+            sendString = "P" + str(braccio_angles)[1:-1].replace(" ", "")
+            print(sendString)
+
+            print(s.write(bytes(sendString, "utf-8")))
+            time.sleep(2)
+            continue
+    if command == "home":
+        current_braccio_angles[0] = 90
+        current_braccio_angles[1] = 90
+        current_braccio_angles[2] = 90
+        current_braccio_angles[3] = 90
+        current_braccio_angles[4] = 90
+        print(current_braccio_angles)
+        sendString = "P" + str(current_braccio_angles)[1:-1].replace(" ", "")
         print(sendString)
-
         print(s.write(bytes(sendString, "utf-8")))
         time.sleep(2)
+        continue
+    else:
+        print("Inavlid command")
 
 sendString = "P90,90,90,90,90,73,100"
 print(sendString)
