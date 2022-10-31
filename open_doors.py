@@ -137,8 +137,9 @@ objectY = 100
 # 		mat.append(val)
 
 cap = cv2.VideoCapture(0)
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH,4096)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT,3000)
+cap.set(cv2.CAP_PROP_FPS,30)
 
 ptsSrc = [[0,0],[width*factor,0],[0,height*factor],[width*factor,height*factor]]
 ptsDes = np.float32([[0,0],[width*factor,0],[0,height*factor],[width*factor,height*factor]])
@@ -150,9 +151,9 @@ while True:
     # image = cv2.imread('image.jpg')
     # cv2.imwrite("grid.png",img)
     h,w,layers = image.shape
-    h = int(h/factor)
-    w = int(w/factor)
-    image = cv2.resize(image,(w,h))
+    h = int(h/4)
+    w = int(w/4)
+
 
     arucoDict = cv2.aruco.Dictionary_get(ARUCO_DICT[arucoDictStr])
     arucoParams = cv2.aruco.DetectorParameters_create()
@@ -200,18 +201,12 @@ while True:
                 ptsSrc[3]=bottomRight
                 target_corners_found += 1
             if markerID == objectID:
-                # global trXY
-                # global getXY
-                # global objectX
-                # global objectY
-                trXY = [cX*factor,cY*factor,1]
-                getXY = np.matmul(TrMat,trXY)
-                getXY = getXY/getXY[2]
-                objectX = int(getXY[0]/factor)
-                objectY = int(getXY[1]/factor)
+                objectX = cX
+                objectY = cY
                 object_found = True
 
-    cv2.imshow("image",image)
+    image_show = cv2.resize(image,(w,h))
+    cv2.imshow("image",image_show)
     if target_corners_found == 4:
         cv2.namedWindow('transformed')
         # cv2.setMouseCallback('transformed', onMouseTransformed)
@@ -219,11 +214,15 @@ while True:
         TrMat = cv2.getPerspectiveTransform(ptsSrc,ptsDes)
         transformed = cv2.warpPerspective(image,TrMat,(width*factor,height*factor))
         if object_found:
+            trXY = [objectX*factor,objectY*factor,1]
+            getXY = np.matmul(TrMat,trXY)
+            getXY = getXY/getXY[2]
+            objectX = int(getXY[0]/factor)
+            objectY = int(getXY[1]/factor)
             print("found")
-            cv2.putText(transformed, "X",(objectX, objectY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            if objectX >=0 and objectX <=300 and objectY >=0 and objectY <= 300:
+                cv2.putText(transformed, "X",(objectX, objectY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         cv2.imshow("transformed",transformed)
-    else :
-        cv2.destroyWindow("transformed")
 
     if cv2.waitKey(1) & 0xFF == 27:#ord('q'):
         break
