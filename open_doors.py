@@ -27,7 +27,7 @@ s.stopbits = 1
 s.open()
 
 time.sleep(2)
-sendString = "P90,90,90,90,90,73,100"
+sendString = "P90,90,90,90,90,20,100"
 print(sendString)
 print(s.write(bytes(sendString, "utf-8")))
 time.sleep(2)
@@ -139,25 +139,23 @@ ptsDes = np.float32([[0,0],[width*factor,0],[0,height*factor],[width*factor,heig
 cv2.namedWindow('image')
 
 # movement instructions
-deltaX = 80
+deltaX = 100
 deltaY = 20
 def execute_move():
     braccioY = objectX + deltaY
     braccioX = objectY + deltaX
-    send_command(command="home")
-    time.sleep(1)
-    send_command(command="open_gripper")
-    time.sleep(1)
-    send_command(command= str(braccioX)+","+str(braccioY)+",80")
-    time.sleep(2)
+    send_command(command= str(braccioX)+","+str(braccioY)+",100")
+    # time.sleep(2)
+    send_command(command= str(braccioX)+","+str(braccioY)+",50")
+    # time.sleep(0.5)
     send_command(command="close_gripper")
-    time.sleep(1)
+    # time.sleep(1)
     send_command(command="home")
-    time.sleep(2)
+    # time.sleep(2)
     send_command(command="1,150,100")
-    time.sleep(2)
+    # time.sleep(2)
     send_command(command="open_gripper")
-    time.sleep(1)
+    # time.sleep(1)
     send_command(command="home")
     time.sleep(1)
 
