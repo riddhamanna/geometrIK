@@ -139,13 +139,27 @@ ptsDes = np.float32([[0,0],[width*factor,0],[0,height*factor],[width*factor,heig
 cv2.namedWindow('image')
 
 # movement instructions
-move_executed = False
-def execute_move:
+deltaX = 80
+deltaY = 20
+def execute_move():
+    braccioY = objectX + deltaY
+    braccioX = objectY + deltaX
+    send_command(command="home")
+    time.sleep(1)
     send_command(command="open_gripper")
+    time.sleep(1)
+    send_command(command= str(braccioX)+","+str(braccioY)+",80")
     time.sleep(2)
     send_command(command="close_gripper")
+    time.sleep(1)
+    send_command(command="home")
     time.sleep(2)
-    move_executed = True
+    send_command(command="1,150,100")
+    time.sleep(2)
+    send_command(command="open_gripper")
+    time.sleep(1)
+    send_command(command="home")
+    time.sleep(1)
 
 while True:
     ret, image = cap.read()
@@ -162,6 +176,7 @@ while True:
 
     target_corners_found = 0
     object_found = False
+    object_found_within_box = False
 
     # verify *at least* one ArUco marker was detected
     if len(corners) > 0:
@@ -210,7 +225,6 @@ while True:
     cv2.imshow("image",image_show)
     if target_corners_found == 4:
         cv2.namedWindow('transformed')
-        # cv2.setMouseCallback('transformed', onMouseTransformed)
         ptsSrc = np.float32(ptsSrc)
         TrMat = cv2.getPerspectiveTransform(ptsSrc,ptsDes)
         transformed = cv2.warpPerspective(image,TrMat,(width*factor,height*factor))
@@ -220,17 +234,17 @@ while True:
             getXY = getXY/getXY[2]
             objectX = int(getXY[0]/factor)
             objectY = int(getXY[1]/factor)
-            print("found")
-            if objectX >=0 and objectX <=300 and objectY >=0 and objectY <= 300:
+            if objectX >=0 and objectX <=300 and objectY >=0 and objectY <= 200:
+                object_found_within_box = True
                 cv2.putText(transformed, "X",(objectX, objectY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                if not move_executed:
-                    execute_move();
-            else :
-                move_executed = False;
 
         cv2.imshow("transformed",transformed)
 
-    if cv2.waitKey(1) & 0xFF == 27:#ord('q'):
+    key = cv2.waitKey(1)
+    if key == ord('m') and object_found_within_box:
+        key = ord('x')
+        execute_move();
+    if key == 27:#ord('q'):
         break
 
 cap.release()
