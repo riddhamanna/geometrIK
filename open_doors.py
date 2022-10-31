@@ -128,14 +128,6 @@ getXY = [0,0,1]
 objectX = 150
 objectY = 100
 
-# def onMouseTransformed(event, x, y, flags, param):
-# 	if event == cv2.EVENT_LBUTTONDOWN:
-# 		global arenaNum
-# 		arenaNum = arenaNum +1
-# 		val = [arenaNum,int(y/factor),int(x/factor)]
-# 		print(val)
-# 		mat.append(val)
-
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,4096)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT,3000)
@@ -145,6 +137,15 @@ ptsSrc = [[0,0],[width*factor,0],[0,height*factor],[width*factor,height*factor]]
 ptsDes = np.float32([[0,0],[width*factor,0],[0,height*factor],[width*factor,height*factor]])
 
 cv2.namedWindow('image')
+
+# movement instructions
+move_executed = False
+def execute_move:
+    send_command(command="open_gripper")
+    time.sleep(2)
+    send_command(command="close_gripper")
+    time.sleep(2)
+    move_executed = True
 
 while True:
     ret, image = cap.read()
@@ -222,6 +223,11 @@ while True:
             print("found")
             if objectX >=0 and objectX <=300 and objectY >=0 and objectY <= 300:
                 cv2.putText(transformed, "X",(objectX, objectY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                if not move_executed:
+                    execute_move();
+            else :
+                move_executed = False;
+
         cv2.imshow("transformed",transformed)
 
     if cv2.waitKey(1) & 0xFF == 27:#ord('q'):
@@ -229,12 +235,6 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-# while True:
-#     comm = input("Enter command or coordinates (x,y,z): ")
-#     send_command(command=comm)
-#     if comm == "quit":
-#         break
 
 sendString = "P90,90,90,90,90,73,100"
 print(sendString)
