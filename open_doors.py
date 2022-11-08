@@ -146,7 +146,7 @@ def execute_move():
     braccioX = objectY + deltaX
     send_command(command= str(braccioX)+","+str(braccioY)+",100")
     # time.sleep(2)
-    send_command(command= str(braccioX)+","+str(braccioY)+",40")
+    send_command(command= str(braccioX)+","+str(braccioY)+",30")
     # time.sleep(0.5)
     send_command(command="close_gripper")
     # time.sleep(1)
