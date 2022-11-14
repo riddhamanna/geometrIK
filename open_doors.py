@@ -239,7 +239,7 @@ while True:
         cv2.imshow("transformed",transformed)
 
     key = cv2.waitKey(1)
-    if key == ord('m') and object_found_within_box:
+    if key == 32 and object_found_within_box:
         key = ord('x')
         execute_move();
     if key == 27:#ord('q'):
