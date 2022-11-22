@@ -158,6 +158,7 @@ deltaY = 20
 
 
 def execute_move():
+    send_command(command="open_gripper")
     braccioY = objectX + deltaY
     braccioX = objectY + deltaX
     send_command(command=str(braccioX) + "," + str(braccioY) + ",100")
@@ -168,7 +169,7 @@ def execute_move():
     # time.sleep(1)
     send_command(command="home")
     # time.sleep(2)
-    send_command(command="1,150,100")
+    send_command(command="1,150,120")
     # time.sleep(2)
     send_command(command="open_gripper")
     # time.sleep(1)
@@ -273,6 +274,8 @@ while True:
                 )
 
         cv2.imshow("transformed", transformed)
+    elif cv2.getWindowProperty("transformed", cv2.WND_PROP_VISIBLE)  > 0:
+        cv2.destroyWindow("transformed")
 
     key = cv2.waitKey(1)
     if key == 32 and object_found_within_box:
